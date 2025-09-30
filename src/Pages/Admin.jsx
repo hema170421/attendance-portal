@@ -245,7 +245,7 @@ export default function Admin() {
                 {(searchName || filterDate) && (
                   <th className="py-2 px-4 border">Attendance History</th>
                 )}
-                <th className="py-2 px-4">Actions</th>
+                <th className="py-2 px-4 border">Actions</th>
               </tr>
             </thead>
             <tbody>
