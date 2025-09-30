@@ -113,32 +113,33 @@ export default function Admin() {
   if (!isAdminLoggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-        <div className="w-full max-w-md bg-white shadow rounded-lg p-6 space-y-4">
-          <h2 className="text-2xl font-bold text-orange-500 text-center">
-            Admin Login
-          </h2>
-          <input
-            type="email"
-            placeholder="Admin Email"
-            value={adminEmail}
-            onChange={(e) => setAdminEmail(e.target.value)}
-            className="px-3 py-2 border rounded w-full"
-          />
-          <input
-            type="password"
-            placeholder="Admin Password"
-            value={adminPassword}
-            onChange={(e) => setAdminPassword(e.target.value)}
-            className="px-3 py-2 border rounded w-full"
-          />
-          <Button
-            label="Login"
-            color="blue"
-            onClick={handleAdminLogin}
-            className="w-full"
-          />
-        </div>
-      </div>
+  <div className="w-full max-w-md bg-white shadow rounded-lg p-6 flex flex-col items-center space-y-4">
+    <h2 className="text-2xl font-bold text-orange-500 text-center">
+      Admin Login
+    </h2>
+    <input
+      type="email"
+      placeholder="Admin Email"
+      value={adminEmail}
+      onChange={(e) => setAdminEmail(e.target.value)}
+      className="px-3 py-2 border rounded w-full"
+    />
+    <input
+      type="password"
+      placeholder="Admin Password"
+      value={adminPassword}
+      onChange={(e) => setAdminPassword(e.target.value)}
+      className="px-3 py-2 border rounded w-full"
+    />
+    <Button
+      label="Login"
+      color="blue"
+      onClick={handleAdminLogin}
+      className="w-full max-w-xs"  // ensures it stays centered and not stretched too far
+    />
+  </div>
+</div>
+
     );
   }
 
