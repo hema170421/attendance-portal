@@ -16,6 +16,16 @@ export default function Dash() {
   // 🔹 Toast notification
   const [toast, setToast] = useState(null);
 
+  // 🔹 Helper: filter + sort history (last 30 days, latest first)
+  const getFilteredHistory = (records) => {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    return records
+      .filter((r) => r.empId === currentUser.id && new Date(r.date) >= thirtyDaysAgo)
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+  };
+
   useEffect(() => {
     if (!currentUser) {
       setLoading(false);
@@ -34,8 +44,8 @@ export default function Dash() {
     else if (record.logoutTime) setStatus("Logged Out");
     else setStatus("Logged In");
 
-    const userHistory = allRecords.filter((r) => r.empId === currentUser.id);
-    setHistory(userHistory);
+    // 🔹 Apply filter + sort
+    setHistory(getFilteredHistory(allRecords));
 
     setLoading(false);
   }, [currentUser]);
@@ -69,7 +79,7 @@ export default function Dash() {
     addAttendance(newRecord);
     setTodayRecord(newRecord);
     setStatus("Logged In");
-    setHistory([...history, newRecord]);
+    setHistory(getFilteredHistory([...history, newRecord]));
     showToast("✅ Logged in successfully!");
   };
 
@@ -90,7 +100,7 @@ export default function Dash() {
       localStorage.setItem("attendance", JSON.stringify(allRecords));
       setTodayRecord(allRecords[idx]);
       setStatus("Logged Out");
-      setHistory(allRecords.filter((r) => r.empId === currentUser.id));
+      setHistory(getFilteredHistory(allRecords));
       showToast("🚪 Logged out successfully!");
     }
   };
@@ -108,8 +118,8 @@ export default function Dash() {
   if (!currentUser) return <p className="text-center mt-20 text-lg">Please login first</p>;
 
   return (
-    <div className="min-h-screen p-4 sm:p-8 bg-gray-50 pt-32 relative">
-      <div className="w-full max-w-6xl bg-white shadow rounded-lg p-4 sm:p-8 mt-30">
+    <div className="min-h-screen p-4 sm:p-8 bg-gray-50 pt-30 relative">
+      <div className="w-full max-w-8xl bg-white shadow rounded-lg p-4 sm:p-8 mt-30">
         <h2 className="text-2xl sm:text-3xl font-bold mb-2">Dashboard</h2>
         <p className="text-lg sm:text-xl font-semibold text-orange-400 mb-4">
           Welcome, {currentUser.name}
@@ -144,7 +154,7 @@ export default function Dash() {
 
         {/* History Table */}
         <div className="overflow-x-auto mt-4">
-          <h3 className="text-xl font-bold mt-8 mb-2">Attendance History</h3>
+          <h3 className="text-xl font-bold mt-8 mb-2">Attendance History (Last 30 Days)</h3>
           <table className="min-w-full bg-white border">
             <thead className="bg-gray-200">
               <tr>
@@ -167,31 +177,30 @@ export default function Dash() {
       </div>
 
       {/* 🔹 Floating Confirmation Modal */}
-{confirmAction && (
-  <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
-    <div className="bg-white p-6 rounded-xl shadow-2xl text-center w-80 pointer-events-auto transform transition-transform duration-300 scale-105">
-      <p className="text-lg font-semibold mb-4">
-        Are you sure you want to{" "}
-        <span className="text-orange-500">{confirmAction}</span>?
-      </p>
-      <div className="flex justify-center gap-4">
-        <button
-          className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition-colors"
-          onClick={confirmYes}
-        >
-          Yes
-        </button>
-        <button
-          className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition-colors"
-          onClick={confirmNo}
-        >
-          No
-        </button>
-      </div>
-    </div>
-  </div>
-)}
-
+      {confirmAction && (
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
+          <div className="bg-white p-6 rounded-xl shadow-2xl text-center w-80 pointer-events-auto transform transition-transform duration-300 scale-105">
+            <p className="text-lg font-semibold mb-4">
+              Are you sure you want to{" "}
+              <span className="text-orange-500">{confirmAction}</span>?
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 transition-colors"
+                onClick={confirmYes}
+              >
+                Yes
+              </button>
+              <button
+                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 transition-colors"
+                onClick={confirmNo}
+              >
+                No
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 🔹 Toast Notification */}
       {toast && (

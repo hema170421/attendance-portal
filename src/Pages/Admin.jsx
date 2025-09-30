@@ -75,10 +75,20 @@ export default function Admin() {
     if (!empName || !empEmail || !empPassword) return alert("Fill all fields");
 
     if (editId) {
-      updateEmployee({ id: editId, name: empName, email: empEmail, password: empPassword });
+      updateEmployee({
+        id: editId,
+        name: empName,
+        email: empEmail,
+        password: empPassword,
+      });
       setEditId(null);
     } else {
-      addEmployee({ id: Date.now(), name: empName, email: empEmail, password: empPassword });
+      addEmployee({
+        id: Date.now(),
+        name: empName,
+        email: empEmail,
+        password: empPassword,
+      });
     }
     loadEmployees();
     setEmpName("");
@@ -102,9 +112,11 @@ export default function Admin() {
 
   if (!isAdminLoggedIn) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-gray-100">
-        <div className="w-full max-w-md bg-white shadow rounded-lg p-8 flex flex-col items-center gap-4">
-          <h2 className="text-3xl font-bold text-orange-400">Admin Login</h2>
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+        <div className="w-full max-w-md bg-white shadow rounded-lg p-6 space-y-4">
+          <h2 className="text-2xl font-bold text-orange-500 text-center">
+            Admin Login
+          </h2>
           <input
             type="email"
             placeholder="Admin Email"
@@ -119,189 +131,233 @@ export default function Admin() {
             onChange={(e) => setAdminPassword(e.target.value)}
             className="px-3 py-2 border rounded w-full"
           />
-          <Button label="Login" color="blue" onClick={handleAdminLogin} />
+          <Button
+            label="Login"
+            color="blue"
+            onClick={handleAdminLogin}
+            className="w-full"
+          />
         </div>
       </div>
     );
   }
 
   const filteredEmployees = employees
-    .filter((emp) => emp.name.toLowerCase().includes(searchName.toLowerCase()))
+    .filter((emp) =>
+      emp.name.toLowerCase().includes(searchName.toLowerCase())
+    )
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
-    <div className="min-h-screen bg-gray-50 px-2 sm:px-10 pt-35">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-        <h2 className="text-2xl sm:text-3xl font-bold text-orange-400">Admin Panel</h2>
-        <Button label="Logout" onClick={handleLogout} />
-      </div>
-
-      {/* Stats */}
-      <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-6">
-        <div className="flex-1 text-center sm:bg-blue-50 sm:shadow sm:rounded-lg p-2 sm:p-4">
-          <h3 className="text-lg font-semibold">Total Employees</h3>
-          <p className="text-xl sm:text-2xl font-bold text-blue-600">{totalEmployees}</p>
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
+      <div className="max-w-6xl mx-auto bg-white shadow rounded-lg p-4 sm:p-6 mt-34">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl sm:text-3xl font-bold text-orange-400">
+            Admin Panel
+          </h2>
+          <div className="flex-shrink-0">
+            {/* Smaller Logout button for mobile */}
+            <Button
+              label="Logout"
+              onClick={handleLogout}
+              className="px-3 py-1 text-sm sm:px-4 sm:py-1"
+            />
+          </div>
         </div>
-        <div className="flex-1 text-center sm:bg-green-50 sm:shadow sm:rounded-lg p-2 sm:p-4">
-          <h3 className="text-lg font-semibold">Attendance Today</h3>
-          <p className="text-xl sm:text-2xl font-bold text-green-600">{attendanceToday}</p>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div className="text-center bg-blue-50 rounded-lg p-4">
+            <h3 className="text-lg font-semibold">Total Employees</h3>
+            <p className="text-2xl font-bold text-blue-600">{totalEmployees}</p>
+          </div>
+          <div className="text-center bg-green-50 rounded-lg p-4">
+            <h3 className="text-lg font-semibold">Attendance Today</h3>
+            <p className="text-2xl font-bold text-green-600">{attendanceToday}</p>
+          </div>
+          <div className="text-center bg-orange-50 rounded-lg p-4">
+            <h3 className="text-lg font-semibold">Logged In Employees</h3>
+            <p className="text-2xl font-bold text-orange-600">
+              {loggedInEmployees}
+            </p>
+          </div>
         </div>
-        <div className="flex-1 text-center sm:bg-orange-50 sm:shadow sm:rounded-lg p-2 sm:p-4">
-          <h3 className="text-lg font-semibold">Logged In Employees</h3>
-          <p className="text-xl sm:text-2xl font-bold text-orange-600">{loggedInEmployees}</p>
+
+        {/* Employee Form */}
+        <div className="mb-6 flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 max-w-3xl mx-auto">
+          <input
+            className="px-4 py-2 border rounded flex-1 w-full"
+            placeholder="Name"
+            value={empName}
+            onChange={(e) => setEmpName(e.target.value)}
+          />
+          <input
+            className="px-4 py-2 border rounded flex-1 w-full"
+            placeholder="Email"
+            value={empEmail}
+            onChange={(e) => setEmpEmail(e.target.value)}
+          />
+          <input
+            className="px-4 py-2 border rounded flex-1 w-full"
+            placeholder="Password"
+            value={empPassword}
+            onChange={(e) => setEmpPassword(e.target.value)}
+          />
+          <Button
+            label={editId ? "Update Employee" : "Add Employee"}
+            onClick={handleSaveEmployee}
+            className="w-full sm:w-auto"
+          />
         </div>
-      </div>
 
-      {/* Employee Form */}
-      <div className="mb-6 flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4">
-        <input
-          className="px-4 py-2 border rounded flex-1 min-w-full sm:min-w-[200px]"
-          placeholder="Name"
-          value={empName}
-          onChange={(e) => setEmpName(e.target.value)}
-        />
-        <input
-          className="px-4 py-2 border rounded flex-1 min-w-full sm:min-w-[200px]"
-          placeholder="Email"
-          value={empEmail}
-          onChange={(e) => setEmpEmail(e.target.value)}
-        />
-        <input
-          className="px-4 py-2 border rounded flex-1 min-w-full sm:min-w-[200px]"
-          placeholder="Password"
-          value={empPassword}
-          onChange={(e) => setEmpPassword(e.target.value)}
-        />
-        <Button
-          label={editId ? "Update Employee" : "Add Employee"}
-          color="green"
-          onClick={handleSaveEmployee}
-        />
-      </div>
+        {/* Search + Filter */}
+        <div className="mb-6 flex flex-col sm:flex-row gap-2 items-center justify-center">
+          <input
+            className="px-3 py-2 border rounded w-full sm:w-64"
+            placeholder="Search Employee by Name"
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
+          />
+          <input
+            className="px-3 py-2 border rounded w-full sm:w-auto"
+            type="date"
+            value={filterDate}
+            onChange={(e) => setFilterDate(e.target.value)}
+          />
+        </div>
 
-      {/* Search + Filter */}
-      <div className="mb-4 flex flex-col sm:flex-row gap-2 justify-center items-center">
-        <input
-          className="px-3 py-2 border rounded w-full sm:w-64"
-          placeholder="Search Employee by Name"
-          value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
-        />
-        <input
-          className="px-3 py-2 border rounded w-full sm:w-auto"
-          type="date"
-          value={filterDate}
-          onChange={(e) => setFilterDate(e.target.value)}
-        />
-      </div>
+        {/* Employee Table / Cards */}
+        <div className="overflow-x-auto">
+          <table className="min-w-full sm:shadow sm:rounded-lg border-collapse">
+            <thead className="bg-blue-100 text-blue-800 font-semibold hidden sm:table-header-group">
+              <tr>
+                <th className="py-2 px-4 border">ID</th>
+                <th className="py-2 px-4 border">Name</th>
+                <th className="py-2 px-4 border">Email</th>
+                {!searchName && !filterDate && (
+                  <>
+                    <th className="py-2 px-4 border">Today Login</th>
+                    <th className="py-2 px-4 border">Today Logout</th>
+                  </>
+                )}
+                {(searchName || filterDate) && (
+                  <th className="py-2 px-4 border">Attendance History</th>
+                )}
+                <th className="py-2 px-4">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredEmployees.map((emp) => {
+                const attendance = getAttendance()
+                  .filter((r) => r.empId === emp.id)
+                  .sort((a, b) => new Date(b.date) - new Date(a.date));
+                const todayRecord = attendance.find(
+                  (r) => r.date === new Date().toDateString()
+                );
 
-      {/* Employee Table / Cards */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full border sm:shadow sm:rounded-lg">
-          <thead className="bg-blue-100 text-blue-800 font-semibold">
-            <tr className="hidden sm:table-row">
-              <th className="py-2 px-4 border">ID</th>
-              <th className="py-2 px-4 border">Name</th>
-              <th className="py-2 px-4 border">Email</th>
-              {!searchName && !filterDate && (
-                <>
-                  <th className="py-2 px-4 border">Today Login</th>
-                  <th className="py-2 px-4 border">Today Logout</th>
-                </>
-              )}
-              {(searchName || filterDate) && <th className="py-2 px-4 border">Attendance History</th>}
-              <th className="py-2 px-4">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredEmployees.map((emp) => {
-              const attendance = getAttendance()
-                .filter((r) => r.empId === emp.id)
-                .sort((a, b) => new Date(b.date) - new Date(a.date));
-              const todayRecord = attendance.find((r) => r.date === new Date().toDateString());
-
-              return (
-                <React.Fragment key={emp.id}>
-                  {/* Desktop Row */}
-                  <tr className="hidden sm:table-row hover:bg-gray-50">
-                    <td className="py-2 px-4 border">{emp.id}</td>
-                    <td className="py-2 px-4 border">{emp.name}</td>
-                    <td className="py-2 px-4 border">{emp.email}</td>
-                    {!searchName && !filterDate && (
-                      <>
-                        <td className="py-2 px-4 border">{todayRecord?.loginTime || "-"}</td>
-                        <td className="py-2 px-4 border">{todayRecord?.logoutTime || "-"}</td>
-                      </>
-                    )}
-                    {(searchName || filterDate) && (
-                      <td className="py-2 px-4">
-                        {attendance.map((r) => (
-                          <div key={r.date + r.loginTime} className="text-sm mb-1">
-                            {r.date}: {r.loginTime || "-"} / {r.logoutTime || "-"}
-                          </div>
-                        ))}
-                      </td>
-                    )}
-                    
-                    <td className="py-2 px-4 border">
-                      <div className="flex gap-2 justify-center">
-                        <button
-                          className="bg-gray-200 text-black px-3 py-1 rounded"
-                          onClick={() => handleEdit(emp)}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="bg-gray-200 text-black px-3 py-1 rounded"
-                          onClick={() => handleDelete(emp.id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </td>
-
-                  </tr>
-
-                  {/* Mobile Card */}
-                  <tr className="sm:hidden">
-                    <td className="p-0">
-                      <div className="border rounded-lg shadow p-4 mb-4 bg-white">
-                        <div className="mb-1"><strong>ID:</strong> {emp.id}</div>
-                        <div className="mb-1"><strong>Name:</strong> {emp.name}</div>
-                        <div className="mb-1"><strong>Email:</strong> {emp.email}</div>
-                        {!searchName && !filterDate && (
-                          <>
-                            <div className="mb-1"><strong>Today Login:</strong> {todayRecord?.loginTime || "-"}</div>
-                            <div className="mb-1"><strong>Today Logout:</strong> {todayRecord?.logoutTime || "-"}</div>
-                          </>
-                        )}
-                        {(searchName || filterDate) && (
-                          <div className="mb-1">
-                            <strong>Attendance:</strong>
-                            {attendance.map((r) => (
-                              <div key={r.date + r.loginTime} className="text-sm">
-                                {r.date}: {r.loginTime || "-"} / {r.logoutTime || "-"}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        <div className="flex gap-2 mt-2">
-                          <button className="bg-gray-200 px-3 py-1 rounded flex-1" onClick={() => handleEdit(emp)}>
+                return (
+                  <React.Fragment key={emp.id}>
+                    {/* Desktop Row */}
+                    <tr className="hidden sm:table-row hover:bg-gray-50">
+                      <td className="py-2 px-4 border">{emp.id}</td>
+                      <td className="py-2 px-4 border">{emp.name}</td>
+                      <td className="py-2 px-4 border">{emp.email}</td>
+                      {!searchName && !filterDate && (
+                        <>
+                          <td className="py-2 px-4 border">
+                            {todayRecord?.loginTime || "-"}
+                          </td>
+                          <td className="py-2 px-4 border">
+                            {todayRecord?.logoutTime || "-"}
+                          </td>
+                        </>
+                      )}
+                      {(searchName || filterDate) && (
+                        <td className="py-2 px-4">
+                          {attendance.map((r) => (
+                            <div key={r.date + r.loginTime} className="text-sm mb-1">
+                              {r.date}: {r.loginTime || "-"} / {r.logoutTime || "-"}
+                            </div>
+                          ))}
+                        </td>
+                      )}
+                      <td className="py-2 px-4 border">
+                        <div className="flex gap-2 justify-center">
+                          <button
+                            className="bg-gray-200 text-black px-3 py-1 rounded"
+                            onClick={() => handleEdit(emp)}
+                          >
                             Edit
                           </button>
-                          <button className="bg-gray-200 px-3 py-1 rounded flex-1" onClick={() => handleDelete(emp.id)}>
+                          <button
+                            className="bg-gray-200 text-black px-3 py-1 rounded"
+                            onClick={() => handleDelete(emp.id)}
+                          >
                             Delete
                           </button>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
+                      </td>
+                    </tr>
+
+                    {/* Mobile Card */}
+                    <tr className="sm:hidden">
+                      <td className="p-0 border-0">
+                        <div className=" border rounded-lg p-4 mb-4 bg-white">
+                          <div className="mb-1">
+                            <strong>ID:</strong> {emp.id}
+                          </div>
+                          <div className="mb-1">
+                            <strong>Name:</strong> {emp.name}
+                          </div>
+                          <div className="mb-1">
+                            <strong>Email:</strong> {emp.email}
+                          </div>
+                          {!searchName && !filterDate && (
+                            <>
+                              <div className="mb-1">
+                                <strong>Today Login:</strong>{" "}
+                                {todayRecord?.loginTime || "-"}
+                              </div>
+                              <div className="mb-1">
+                                <strong>Today Logout:</strong>{" "}
+                                {todayRecord?.logoutTime || "-"}
+                              </div>
+                            </>
+                          )}
+                          {(searchName || filterDate) && (
+                            <div className="mb-1">
+                              <strong>Attendance:</strong>
+                              {attendance.map((r) => (
+                                <div key={r.date + r.loginTime} className="text-sm">
+                                  {r.date}: {r.loginTime || "-"} / {r.logoutTime || "-"}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <div className="flex gap-2 mt-2">
+                            <button
+                              className="bg-gray-200 px-3 py-1 rounded flex-1"
+                              onClick={() => handleEdit(emp)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="bg-gray-200 px-3 py-1 rounded flex-1"
+                              onClick={() => handleDelete(emp.id)}
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
